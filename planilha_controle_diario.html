@@ -1,0 +1,381 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+h2.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+.container { padding: 1.5rem 0; }
+
+.header { margin-bottom: 1.5rem; }
+.header h1 { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+.header p { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+
+.form-card {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 12px; color: var(--color-text-secondary); }
+.field input {
+  height: 36px;
+  padding: 0 10px;
+  font-size: 14px;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  width: 100%;
+}
+.field input:focus { outline: none; box-shadow: 0 0 0 2px var(--color-border-secondary); }
+
+.btn-add {
+  width: 100%;
+  height: 36px;
+  background: transparent;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+.btn-add:hover { background: var(--color-background-secondary); }
+.btn-add:active { transform: scale(0.98); }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 0.875rem 1rem;
+}
+.stat-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.stat-value { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+.stat-sub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+
+.table-card {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+
+.table-header {
+  padding: 12px 16px;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.table-header span { font-size: 14px; font-weight: 500; color: var(--color-text-secondary); }
+
+.btn-clear {
+  height: 28px;
+  padding: 0 10px;
+  background: transparent;
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+}
+.btn-clear:hover { background: var(--color-background-secondary); }
+
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+thead th {
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  background: var(--color-background-secondary);
+  white-space: nowrap;
+  font-size: 12px;
+}
+tbody tr { border-bottom: 0.5px solid var(--color-border-tertiary); }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--color-background-secondary); }
+tbody td {
+  padding: 10px 12px;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+tbody td.negative { color: #A32D2D; }
+tbody td.positive { color: #3B6D11; }
+tbody td.muted { color: var(--color-text-secondary); font-size: 12px; }
+
+.btn-del {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-tertiary);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.btn-del:hover { color: #A32D2D; background: #FCEBEB; }
+
+.empty {
+  padding: 2.5rem;
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
+}
+
+.avg-row td { font-weight: 500; background: var(--color-background-secondary); font-size: 12px; }
+</style>
+
+<h2 class="sr-only">Planilha de controle diário de km, ganhos e gastos</h2>
+
+<div class="container">
+  <div class="header">
+    <h1><i class="ti ti-car" aria-hidden="true" style="font-size:20px; vertical-align:-2px; margin-right:6px"></i>Controle diário</h1>
+    <p>Registre seus dados por dia e acompanhe as médias</p>
+  </div>
+
+  <div class="form-card">
+    <div class="form-title">
+      <i class="ti ti-plus" aria-hidden="true" style="font-size:15px"></i>
+      Novo registro
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Data</label>
+        <input type="date" id="f-data">
+      </div>
+      <div class="field">
+        <label>KM rodados</label>
+        <input type="number" id="f-km" placeholder="0" min="0" step="0.1">
+      </div>
+      <div class="field">
+        <label>Valor ganho (R$)</label>
+        <input type="number" id="f-ganho" placeholder="0,00" min="0" step="0.01">
+      </div>
+      <div class="field">
+        <label>Gasto gasolina (R$)</label>
+        <input type="number" id="f-gas" placeholder="0,00" min="0" step="0.01">
+      </div>
+      <div class="field">
+        <label>Gasto diário (R$)</label>
+        <input type="number" id="f-gdiario" placeholder="0,00" min="0" step="0.01">
+      </div>
+      <div class="field">
+        <label>Manutenção (R$)</label>
+        <input type="number" id="f-manut" placeholder="0,00" min="0" step="0.01">
+      </div>
+    </div>
+    <button class="btn-add" onclick="addRow()">
+      <i class="ti ti-plus" aria-hidden="true"></i>
+      Adicionar registro
+    </button>
+  </div>
+
+  <div class="stats-grid" id="stats-grid" style="display:none">
+    <div class="stat-card">
+      <div class="stat-label">Média KM/dia</div>
+      <div class="stat-value" id="s-km">—</div>
+      <div class="stat-sub">km por dia</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Média ganhos/dia</div>
+      <div class="stat-value" id="s-ganho">—</div>
+      <div class="stat-sub">R$ por dia</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Média gasolina/dia</div>
+      <div class="stat-value" id="s-gas">—</div>
+      <div class="stat-sub">R$ por dia</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Lucro líquido médio</div>
+      <div class="stat-value" id="s-lucro">—</div>
+      <div class="stat-sub">ganhos − gastos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total ganho</div>
+      <div class="stat-value" id="s-tganho">—</div>
+      <div class="stat-sub">acumulado</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total gasto</div>
+      <div class="stat-value" id="s-tgasto">—</div>
+      <div class="stat-sub">acumulado</div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <span><i class="ti ti-table" aria-hidden="true" style="font-size:15px; vertical-align:-2px; margin-right:6px"></i>Registros</span>
+      <button class="btn-clear" onclick="clearAll()">Limpar tudo</button>
+    </div>
+    <div class="table-wrap">
+      <table id="main-table">
+        <thead>
+          <tr>
+            <th style="width:90px">Data</th>
+            <th style="width:70px">KM</th>
+            <th style="width:95px">Ganho</th>
+            <th style="width:100px">Gasolina</th>
+            <th style="width:95px">Gasto diário</th>
+            <th style="width:95px">Manutenção</th>
+            <th style="width:85px">Líquido</th>
+            <th style="width:36px"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="8" class="empty"><i class="ti ti-inbox" style="font-size:20px; display:block; margin-bottom:6px"></i>Nenhum registro ainda</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+let rows = [];
+try { rows = JSON.parse(localStorage.getItem('ctrl_diario') || '[]'); } catch(e) {}
+
+function fmt(v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); }
+function fmtKm(v) { return Number(v).toFixed(1).replace('.', ',') + ' km'; }
+function fmtDate(d) {
+  if (!d) return '—';
+  const [y,m,dd] = d.split('-');
+  return dd + '/' + m + '/' + y;
+}
+
+function save() {
+  try { localStorage.setItem('ctrl_diario', JSON.stringify(rows)); } catch(e) {}
+}
+
+function addRow() {
+  const data = document.getElementById('f-data').value;
+  const km = parseFloat(document.getElementById('f-km').value) || 0;
+  const ganho = parseFloat(document.getElementById('f-ganho').value) || 0;
+  const gas = parseFloat(document.getElementById('f-gas').value) || 0;
+  const gdiario = parseFloat(document.getElementById('f-gdiario').value) || 0;
+  const manut = parseFloat(document.getElementById('f-manut').value) || 0;
+
+  if (!data && km === 0 && ganho === 0) {
+    document.getElementById('f-data').focus();
+    return;
+  }
+
+  rows.push({ data, km, ganho, gas, gdiario, manut, id: Date.now() });
+  rows.sort((a,b) => (a.data || '').localeCompare(b.data || ''));
+  save();
+  render();
+
+  ['f-data','f-km','f-ganho','f-gas','f-gdiario','f-manut'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el.type === 'date') el.value = '';
+    else el.value = '';
+  });
+}
+
+function delRow(id) {
+  rows = rows.filter(r => r.id !== id);
+  save();
+  render();
+}
+
+function clearAll() {
+  if (rows.length === 0) return;
+  rows = [];
+  save();
+  render();
+}
+
+function render() {
+  const tbody = document.getElementById('tbody');
+  const stats = document.getElementById('stats-grid');
+
+  if (rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty"><i class="ti ti-inbox" style="font-size:20px; display:block; margin-bottom:6px"></i>Nenhum registro ainda</td></tr>';
+    stats.style.display = 'none';
+    return;
+  }
+
+  stats.style.display = 'grid';
+
+  let html = '';
+  let totKm=0, totGanho=0, totGas=0, totGdiario=0, totManut=0;
+  const n = rows.length;
+
+  rows.forEach(r => {
+    const liquido = r.ganho - r.gas - r.gdiario - r.manut;
+    totKm += r.km; totGanho += r.ganho; totGas += r.gas; totGdiario += r.gdiario; totManut += r.manut;
+    html += `<tr>
+      <td>${fmtDate(r.data)}</td>
+      <td>${r.km > 0 ? r.km.toFixed(1).replace('.', ',') : '—'}</td>
+      <td class="positive">${r.ganho > 0 ? fmt(r.ganho) : '—'}</td>
+      <td class="${r.gas > 0 ? 'negative' : 'muted'}">${r.gas > 0 ? fmt(r.gas) : '—'}</td>
+      <td class="${r.gdiario > 0 ? 'negative' : 'muted'}">${r.gdiario > 0 ? fmt(r.gdiario) : '—'}</td>
+      <td class="${r.manut > 0 ? 'negative' : 'muted'}">${r.manut > 0 ? fmt(r.manut) : '—'}</td>
+      <td class="${liquido >= 0 ? 'positive' : 'negative'}">${fmt(liquido)}</td>
+      <td><button class="btn-del" onclick="delRow(${r.id})" aria-label="Remover"><i class="ti ti-trash" aria-hidden="true"></i></button></td>
+    </tr>`;
+  });
+
+  const avgKm = totKm/n, avgGanho = totGanho/n, avgGas = totGas/n;
+  const avgGdiario = totGdiario/n, avgManut = totManut/n;
+  const avgLucro = avgGanho - avgGas - avgGdiario - avgManut;
+  const totGasto = totGas + totGdiario + totManut;
+  const avgLiqTotal = (totGanho - totGasto)/n;
+
+  html += `<tr class="avg-row">
+    <td>Média</td>
+    <td>${avgKm.toFixed(1).replace('.', ',')} km</td>
+    <td>${fmt(avgGanho)}</td>
+    <td>${fmt(avgGas)}</td>
+    <td>${fmt(avgGdiario)}</td>
+    <td>${fmt(avgManut)}</td>
+    <td class="${avgLucro >= 0 ? 'positive' : 'negative'}">${fmt(avgLucro)}</td>
+    <td></td>
+  </tr>`;
+
+  tbody.innerHTML = html;
+
+  document.getElementById('s-km').textContent = avgKm.toFixed(1).replace('.', ',');
+  document.getElementById('s-ganho').textContent = 'R$ ' + avgGanho.toFixed(2).replace('.', ',');
+  document.getElementById('s-gas').textContent = 'R$ ' + avgGas.toFixed(2).replace('.', ',');
+  document.getElementById('s-lucro').textContent = 'R$ ' + avgLiqTotal.toFixed(2).replace('.', ',');
+  document.getElementById('s-tganho').textContent = 'R$ ' + totGanho.toFixed(2).replace('.', ',');
+  document.getElementById('s-tgasto').textContent = 'R$ ' + totGasto.toFixed(2).replace('.', ',');
+}
+
+const today = new Date().toISOString().slice(0,10);
+document.getElementById('f-data').value = today;
+
+render();
+</script>
