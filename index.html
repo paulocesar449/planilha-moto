@@ -17,17 +17,9 @@
 
   .container { max-width: 960px; margin: 0 auto; }
 
-  .header { margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-  .header-left h1 { font-size: 22px; font-weight: 500; }
-  .header-left p { font-size: 13px; color: #666; margin-top: 4px; }
-
-  .status-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #ccc; display: inline-block; margin-right: 5px;
-  }
-  .status-dot.online { background: #3b6d11; }
-  .status-dot.error { background: #a32d2d; }
-  #status-text { font-size: 12px; color: #999; }
+  .header { margin-bottom: 1.5rem; }
+  .header h1 { font-size: 22px; font-weight: 500; }
+  .header p { font-size: 13px; color: #666; margin-top: 4px; }
 
   .form-card {
     background: #fff;
@@ -38,8 +30,13 @@
   }
 
   .form-title {
-    font-size: 14px; font-weight: 500; color: #555;
-    margin-bottom: 1rem; display: flex; align-items: center; gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .form-grid {
@@ -52,49 +49,76 @@
   .field { display: flex; flex-direction: column; gap: 4px; }
   .field label { font-size: 12px; color: #666; }
   .field input {
-    height: 36px; padding: 0 10px; font-size: 14px;
-    border: 1px solid #ccc; border-radius: 8px;
-    background: #fafafa; color: #1a1a18; width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #fafafa;
+    color: #1a1a18;
+    width: 100%;
   }
   .field input:focus { outline: none; border-color: #888; box-shadow: 0 0 0 2px rgba(0,0,0,0.08); }
 
   .btn-add {
-    width: 100%; height: 36px; background: transparent;
-    border: 1px solid #ccc; border-radius: 8px;
-    color: #1a1a18; font-size: 14px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: 100%;
+    height: 36px;
+    background: transparent;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    color: #1a1a18;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     transition: background 0.15s;
   }
   .btn-add:hover { background: #f5f5f3; }
   .btn-add:active { transform: scale(0.98); }
-  .btn-add:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 10px; margin-bottom: 1.5rem;
+    gap: 10px;
+    margin-bottom: 1.5rem;
   }
 
-  .stat-card { background: #ebebea; border-radius: 8px; padding: 0.875rem 1rem; }
+  .stat-card {
+    background: #ebebea;
+    border-radius: 8px;
+    padding: 0.875rem 1rem;
+  }
   .stat-label { font-size: 12px; color: #666; margin-bottom: 4px; }
   .stat-value { font-size: 20px; font-weight: 500; color: #1a1a18; }
   .stat-sub { font-size: 11px; color: #999; margin-top: 2px; }
 
   .table-card {
-    background: #fff; border: 1px solid #e0e0dc;
-    border-radius: 12px; overflow: hidden;
+    background: #fff;
+    border: 1px solid #e0e0dc;
+    border-radius: 12px;
+    overflow: hidden;
   }
 
   .table-header {
-    padding: 12px 16px; border-bottom: 1px solid #e0e0dc;
-    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0dc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   .table-header span { font-size: 14px; font-weight: 500; color: #555; }
 
   .btn-clear {
-    height: 28px; padding: 0 10px; background: transparent;
-    border: 1px solid #ccc; border-radius: 8px;
-    color: #666; font-size: 12px; cursor: pointer;
+    height: 28px;
+    padding: 0 10px;
+    background: transparent;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    color: #666;
+    font-size: 12px;
+    cursor: pointer;
   }
   .btn-clear:hover { background: #f5f5f3; }
 
@@ -102,32 +126,50 @@
 
   table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
   thead th {
-    padding: 8px 12px; text-align: left; font-weight: 500;
-    color: #555; border-bottom: 1px solid #e0e0dc;
-    background: #fafafa; white-space: nowrap; font-size: 12px;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 500;
+    color: #555;
+    border-bottom: 1px solid #e0e0dc;
+    background: #fafafa;
+    white-space: nowrap;
+    font-size: 12px;
   }
   tbody tr { border-bottom: 1px solid #e0e0dc; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: #fafafa; }
-  tbody td { padding: 10px 12px; color: #1a1a18; white-space: nowrap; }
+  tbody td {
+    padding: 10px 12px;
+    color: #1a1a18;
+    white-space: nowrap;
+  }
   tbody td.negative { color: #a32d2d; }
   tbody td.positive { color: #3b6d11; }
   tbody td.muted { color: #999; font-size: 12px; }
 
   .btn-del {
-    background: none; border: none; cursor: pointer;
-    color: #bbb; padding: 2px 4px; border-radius: 4px; font-size: 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #bbb;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 14px;
   }
   .btn-del:hover { color: #a32d2d; background: #fce8e8; }
 
-  .empty { padding: 2.5rem; text-align: center; color: #bbb; font-size: 13px; }
-  .loading { padding: 2rem; text-align: center; color: #999; font-size: 13px; }
+  .empty {
+    padding: 2.5rem;
+    text-align: center;
+    color: #bbb;
+    font-size: 13px;
+  }
+
   .avg-row td { font-weight: 500; background: #f5f5f3; font-size: 12px; }
 
   @media (max-width: 600px) {
     .form-grid { grid-template-columns: 1fr 1fr; }
     .stats-grid { grid-template-columns: 1fr 1fr; }
-    body { padding: 1rem 0.75rem; }
   }
 </style>
 </head>
@@ -135,14 +177,8 @@
 
 <div class="container">
   <div class="header">
-    <div class="header-left">
-      <h1><i class="ti ti-car" style="font-size:20px; vertical-align:-2px; margin-right:6px"></i>Controle diário</h1>
-      <p>Registre seus dados por dia e acompanhe as médias</p>
-    </div>
-    <div>
-      <span class="status-dot" id="status-dot"></span>
-      <span id="status-text">conectando...</span>
-    </div>
+    <h1><i class="ti ti-car" style="font-size:20px; vertical-align:-2px; margin-right:6px"></i>Controle diário</h1>
+    <p>Registre seus dados por dia e acompanhe as médias</p>
   </div>
 
   <div class="form-card">
@@ -176,7 +212,7 @@
         <input type="number" id="f-manut" placeholder="0,00" min="0" step="0.01">
       </div>
     </div>
-    <button class="btn-add" id="btn-add" onclick="addRow()">
+    <button class="btn-add" onclick="addRow()">
       <i class="ti ti-plus"></i>
       Adicionar registro
     </button>
@@ -221,7 +257,7 @@
       <button class="btn-clear" onclick="clearAll()">Limpar tudo</button>
     </div>
     <div class="table-wrap">
-      <table>
+      <table id="main-table">
         <thead>
           <tr>
             <th style="width:90px">Data</th>
@@ -235,7 +271,7 @@
           </tr>
         </thead>
         <tbody id="tbody">
-          <tr><td colspan="8" class="loading"><i class="ti ti-loader" style="font-size:18px; display:block; margin-bottom:6px"></i>Carregando...</td></tr>
+          <tr><td colspan="8" class="empty"><i class="ti ti-inbox" style="font-size:20px; display:block; margin-bottom:6px"></i>Nenhum registro ainda</td></tr>
         </tbody>
       </table>
     </div>
@@ -243,23 +279,8 @@
 </div>
 
 <script>
-  const SUPABASE_URL = 'https://ktmgmmnkuyjxiozkluji.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0bWdtbW5rdXlqeGlvemtsdWppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4NDA5NDMsImV4cCI6MjA5NTQxNjk0M30.Ej2K70fLkn2896Xg923l6nm-4T4bwXJNkmdluOOGhK4';
-  const HEADERS = {
-    'Content-Type': 'application/json',
-    'apikey': SUPABASE_KEY,
-    'Authorization': 'Bearer ' + SUPABASE_KEY,
-    'Prefer': 'return=representation'
-  };
-
   let rows = [];
-
-  function setStatus(state) {
-    const dot = document.getElementById('status-dot');
-    const txt = document.getElementById('status-text');
-    dot.className = 'status-dot ' + state;
-    txt.textContent = state === 'online' ? 'conectado' : state === 'error' ? 'erro de conexão' : 'conectando...';
-  }
+  try { rows = JSON.parse(localStorage.getItem('ctrl_diario') || '[]'); } catch(e) {}
 
   function fmt(v) { return 'R$ ' + Number(v).toFixed(2).replace('.', ','); }
   function fmtDate(d) {
@@ -268,20 +289,11 @@
     return dd + '/' + m + '/' + y;
   }
 
-  async function loadRows() {
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?order=data.asc`, { headers: HEADERS });
-      if (!res.ok) throw new Error();
-      rows = await res.json();
-      setStatus('online');
-      render();
-    } catch(e) {
-      setStatus('error');
-      document.getElementById('tbody').innerHTML = '<tr><td colspan="8" class="empty" style="color:#a32d2d">Erro ao conectar. Verifique a internet.</td></tr>';
-    }
+  function save() {
+    try { localStorage.setItem('ctrl_diario', JSON.stringify(rows)); } catch(e) {}
   }
 
-  async function addRow() {
+  function addRow() {
     const data = document.getElementById('f-data').value;
     const km = parseFloat(document.getElementById('f-km').value) || 0;
     const ganho = parseFloat(document.getElementById('f-ganho').value) || 0;
@@ -294,55 +306,34 @@
       return;
     }
 
-    const btn = document.getElementById('btn-add');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="ti ti-loader"></i> Salvando...';
+    rows.push({ data, km, ganho, gas, gdiario, manut, id: Date.now() });
+    rows.sort((a,b) => (a.data || '').localeCompare(b.data || ''));
+    save();
+    render();
 
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/registros`, {
-        method: 'POST',
-        headers: HEADERS,
-        body: JSON.stringify({ data: data || null, km, ganho, gas, gdiario, manut })
-      });
-      if (!res.ok) throw new Error();
-
-      ['f-data','f-km','f-ganho','f-gas','f-gdiario','f-manut'].forEach(id => {
-        document.getElementById(id).value = '';
-      });
-      document.getElementById('f-data').value = new Date().toISOString().slice(0,10);
-      await loadRows();
-    } catch(e) {
-      alert('Erro ao salvar. Tente novamente.');
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '<i class="ti ti-plus"></i> Adicionar registro';
-    }
+    ['f-data','f-km','f-ganho','f-gas','f-gdiario','f-manut'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
   }
 
-  async function delRow(id) {
-    try {
-      await fetch(`${SUPABASE_URL}/rest/v1/registros?id=eq.${id}`, {
-        method: 'DELETE', headers: HEADERS
-      });
-      await loadRows();
-    } catch(e) { alert('Erro ao deletar.'); }
+  function delRow(id) {
+    rows = rows.filter(r => r.id !== id);
+    save();
+    render();
   }
 
-  async function clearAll() {
+  function clearAll() {
     if (rows.length === 0 || !confirm('Tem certeza que deseja apagar todos os registros?')) return;
-    try {
-      await fetch(`${SUPABASE_URL}/rest/v1/registros?id=gte.0`, {
-        method: 'DELETE', headers: HEADERS
-      });
-      await loadRows();
-    } catch(e) { alert('Erro ao limpar.'); }
+    rows = [];
+    save();
+    render();
   }
 
   function render() {
     const tbody = document.getElementById('tbody');
     const stats = document.getElementById('stats-grid');
 
-    if (!rows || rows.length === 0) {
+    if (rows.length === 0) {
       tbody.innerHTML = '<tr><td colspan="8" class="empty"><i class="ti ti-inbox" style="font-size:20px; display:block; margin-bottom:6px"></i>Nenhum registro ainda</td></tr>';
       stats.style.display = 'none';
       return;
@@ -356,11 +347,10 @@
 
     rows.forEach(r => {
       const liquido = r.ganho - r.gas - r.gdiario - r.manut;
-      totKm += Number(r.km); totGanho += Number(r.ganho);
-      totGas += Number(r.gas); totGdiario += Number(r.gdiario); totManut += Number(r.manut);
+      totKm += r.km; totGanho += r.ganho; totGas += r.gas; totGdiario += r.gdiario; totManut += r.manut;
       html += `<tr>
         <td>${fmtDate(r.data)}</td>
-        <td>${r.km > 0 ? Number(r.km).toFixed(1).replace('.', ',') : '—'}</td>
+        <td>${r.km > 0 ? r.km.toFixed(1).replace('.', ',') : '—'}</td>
         <td class="positive">${r.ganho > 0 ? fmt(r.ganho) : '—'}</td>
         <td class="${r.gas > 0 ? 'negative' : 'muted'}">${r.gas > 0 ? fmt(r.gas) : '—'}</td>
         <td class="${r.gdiario > 0 ? 'negative' : 'muted'}">${r.gdiario > 0 ? fmt(r.gdiario) : '—'}</td>
@@ -374,6 +364,7 @@
     const avgGdiario = totGdiario/n, avgManut = totManut/n;
     const avgLucro = avgGanho - avgGas - avgGdiario - avgManut;
     const totGasto = totGas + totGdiario + totManut;
+    const avgLiqTotal = (totGanho - totGasto)/n;
 
     html += `<tr class="avg-row">
       <td>Média</td>
@@ -391,13 +382,13 @@
     document.getElementById('s-km').textContent = avgKm.toFixed(1).replace('.', ',');
     document.getElementById('s-ganho').textContent = 'R$ ' + avgGanho.toFixed(2).replace('.', ',');
     document.getElementById('s-gas').textContent = 'R$ ' + avgGas.toFixed(2).replace('.', ',');
-    document.getElementById('s-lucro').textContent = 'R$ ' + avgLucro.toFixed(2).replace('.', ',');
+    document.getElementById('s-lucro').textContent = 'R$ ' + avgLiqTotal.toFixed(2).replace('.', ',');
     document.getElementById('s-tganho').textContent = 'R$ ' + totGanho.toFixed(2).replace('.', ',');
     document.getElementById('s-tgasto').textContent = 'R$ ' + totGasto.toFixed(2).replace('.', ',');
   }
 
   document.getElementById('f-data').value = new Date().toISOString().slice(0,10);
-  loadRows();
+  render();
 </script>
 </body>
 </html>
