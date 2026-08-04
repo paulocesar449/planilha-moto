@@ -42,6 +42,19 @@
     margin-bottom: 1rem; display: flex; align-items: center; gap: 6px;
   }
 
+  .vehicle-toggle {
+    display: flex; gap: 8px; margin-bottom: 1rem;
+  }
+  .vehicle-toggle button {
+    flex: 1; height: 40px; border-radius: 8px; border: 1px solid #ccc;
+    background: #fafafa; color: #666; font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all 0.15s;
+  }
+  .vehicle-toggle button.active.fiorino { background: #1a1a18; color: #fff; border-color: #1a1a18; }
+  .vehicle-toggle button.active.moto { background: #6d4c11; color: #fff; border-color: #6d4c11; }
+  .vehicle-toggle button:hover:not(.active) { background: #f0f0ee; }
+
   .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -69,16 +82,44 @@
   .btn-add:active { transform: scale(0.98); }
   .btn-add:disabled { opacity: 0.5; cursor: not-allowed; }
 
+  .filter-bar {
+    display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .filter-btn {
+    height: 32px; padding: 0 14px; border-radius: 20px; border: 1px solid #ccc;
+    background: #fff; color: #555; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-btn.active { background: #1a1a18; color: #fff; border-color: #1a1a18; }
+  .filter-btn:hover:not(.active) { background: #f5f5f3; }
+
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 10px; margin-bottom: 1.5rem;
+    gap: 10px; margin-bottom: 1rem;
   }
 
   .stat-card { background: #ebebea; border-radius: 8px; padding: 0.875rem 1rem; }
   .stat-label { font-size: 12px; color: #666; margin-bottom: 4px; }
   .stat-value { font-size: 20px; font-weight: 500; color: #1a1a18; }
   .stat-sub { font-size: 11px; color: #999; margin-top: 2px; }
+
+  .compare-wrap {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.5rem;
+  }
+  .compare-card {
+    background: #fff; border: 1px solid #e0e0dc; border-radius: 10px; padding: 0.875rem 1rem;
+  }
+  .compare-card .ctitle {
+    font-size: 12px; font-weight: 500; color: #555; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .compare-card .crow {
+    display: flex; justify-content: space-between; font-size: 12px; color: #666;
+    padding: 3px 0;
+  }
+  .compare-card .crow b { color: #1a1a18; font-weight: 500; }
+  .compare-card.empty { color: #bbb; font-size: 12px; text-align: center; padding: 1.5rem 1rem; }
 
   .table-card {
     background: #fff; border: 1px solid #e0e0dc;
@@ -114,6 +155,13 @@
   tbody td.positive { color: #3b6d11; }
   tbody td.muted { color: #999; font-size: 12px; }
 
+  .vtag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; padding: 2px 8px; border-radius: 10px;
+  }
+  .vtag.fiorino { background: #ebebea; color: #1a1a18; }
+  .vtag.moto { background: #f0e6d2; color: #6d4c11; }
+
   .btn-del {
     background: none; border: none; cursor: pointer;
     color: #bbb; padding: 2px 4px; border-radius: 4px; font-size: 14px;
@@ -123,10 +171,20 @@
   .empty { padding: 2.5rem; text-align: center; color: #bbb; font-size: 13px; }
   .loading { padding: 2rem; text-align: center; color: #999; font-size: 13px; }
   .avg-row td { font-weight: 500; background: #f5f5f3; font-size: 12px; }
+  .setup-warning {
+    background: #fdf3e2; border: 1px solid #e8cf9c; color: #7a5a12;
+    border-radius: 10px; padding: 0.9rem 1rem; margin-bottom: 1.5rem; font-size: 13px;
+    line-height: 1.5;
+  }
+  .setup-warning code {
+    display: block; background: #fff; border: 1px solid #e8cf9c; border-radius: 6px;
+    padding: 8px 10px; margin-top: 6px; font-size: 12px; overflow-x: auto;
+  }
 
   @media (max-width: 600px) {
     .form-grid { grid-template-columns: 1fr 1fr; }
     .stats-grid { grid-template-columns: 1fr 1fr; }
+    .compare-wrap { grid-template-columns: 1fr; }
     body { padding: 1rem 0.75rem; }
   }
 </style>
@@ -137,7 +195,7 @@
   <div class="header">
     <div class="header-left">
       <h1><i class="ti ti-car" style="font-size:20px; vertical-align:-2px; margin-right:6px"></i>Controle diário</h1>
-      <p>Registre seus dados por dia e acompanhe as médias</p>
+      <p>Registre seus dados por dia (carro ou moto) e acompanhe as médias</p>
     </div>
     <div>
       <span class="status-dot" id="status-dot"></span>
@@ -145,11 +203,23 @@
     </div>
   </div>
 
+  <div id="setup-warning-slot"></div>
+
   <div class="form-card">
     <div class="form-title">
       <i class="ti ti-plus" style="font-size:15px"></i>
       Novo registro
     </div>
+
+    <div class="vehicle-toggle">
+      <button type="button" class="fiorino active" id="vt-fiorino" onclick="setFormVehicle('fiorino')">
+        <i class="ti ti-car"></i> Fiorino
+      </button>
+      <button type="button" class="moto" id="vt-moto" onclick="setFormVehicle('moto')">
+        <i class="ti ti-motorbike"></i> Moto
+      </button>
+    </div>
+
     <div class="form-grid">
       <div class="field">
         <label>Data</label>
@@ -182,6 +252,12 @@
     </button>
   </div>
 
+  <div class="filter-bar" id="filter-bar" style="display:none">
+    <button class="filter-btn active" data-f="todos" onclick="setFilter('todos')"><i class="ti ti-list"></i> Todos</button>
+    <button class="filter-btn" data-f="fiorino" onclick="setFilter('fiorino')"><i class="ti ti-car"></i> Fiorino</button>
+    <button class="filter-btn" data-f="moto" onclick="setFilter('moto')"><i class="ti ti-motorbike"></i> Moto</button>
+  </div>
+
   <div class="stats-grid" id="stats-grid" style="display:none">
     <div class="stat-card">
       <div class="stat-label">Média KM/dia</div>
@@ -206,13 +282,18 @@
     <div class="stat-card">
       <div class="stat-label">Total ganho</div>
       <div class="stat-value" id="s-tganho">—</div>
-      <div class="stat-sub">acumulado</div>
+      <div class="stat-sub">acumulado (filtro atual)</div>
     </div>
     <div class="stat-card">
       <div class="stat-label">Total gasto</div>
       <div class="stat-value" id="s-tgasto">—</div>
-      <div class="stat-sub">acumulado</div>
+      <div class="stat-sub">acumulado (filtro atual)</div>
     </div>
+  </div>
+
+  <div class="compare-wrap" id="compare-wrap" style="display:none">
+    <div class="compare-card" id="cc-fiorino"></div>
+    <div class="compare-card" id="cc-moto"></div>
   </div>
 
   <div class="table-card">
@@ -225,6 +306,7 @@
         <thead>
           <tr>
             <th style="width:90px">Data</th>
+            <th style="width:80px">Veículo</th>
             <th style="width:70px">KM</th>
             <th style="width:95px">Ganho</th>
             <th style="width:100px">Gasolina</th>
@@ -235,7 +317,7 @@
           </tr>
         </thead>
         <tbody id="tbody">
-          <tr><td colspan="8" class="loading"><i class="ti ti-loader" style="font-size:18px; display:block; margin-bottom:6px"></i>Carregando...</td></tr>
+          <tr><td colspan="9" class="loading"><i class="ti ti-loader" style="font-size:18px; display:block; margin-bottom:6px"></i>Carregando...</td></tr>
         </tbody>
       </table>
     </div>
@@ -253,6 +335,9 @@
   };
 
   let rows = [];
+  let formVehicle = 'fiorino';
+  let filter = 'todos';
+  let missingColumn = false;
 
   function setStatus(state) {
     const dot = document.getElementById('status-dot');
@@ -268,16 +353,41 @@
     return dd + '/' + m + '/' + y;
   }
 
+  function setFormVehicle(v) {
+    formVehicle = v;
+    document.getElementById('vt-fiorino').classList.toggle('active', v === 'fiorino');
+    document.getElementById('vt-moto').classList.toggle('active', v === 'moto');
+  }
+
+  function setFilter(f) {
+    filter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.f === f));
+    render();
+  }
+
+  function showSetupWarning() {
+    document.getElementById('setup-warning-slot').innerHTML = `
+      <div class="setup-warning">
+        <i class="ti ti-alert-triangle"></i>
+        Para separar por veículo, adicione a coluna <b>veiculo</b> na tabela <b>registros</b> do seu Supabase
+        (SQL Editor → cole e execute):
+        <code>ALTER TABLE registros ADD COLUMN veiculo text DEFAULT 'fiorino';</code>
+        Até lá, todos os registros serão tratados como "Fiorino".
+      </div>`;
+  }
+
   async function loadRows() {
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/registros?order=data.asc`, { headers: HEADERS });
       if (!res.ok) throw new Error();
       rows = await res.json();
+      missingColumn = rows.length > 0 && !('veiculo' in rows[0]);
+      if (missingColumn) showSetupWarning();
       setStatus('online');
       render();
     } catch(e) {
       setStatus('error');
-      document.getElementById('tbody').innerHTML = '<tr><td colspan="8" class="empty" style="color:#a32d2d">Erro ao conectar. Verifique a internet.</td></tr>';
+      document.getElementById('tbody').innerHTML = '<tr><td colspan="9" class="empty" style="color:#a32d2d">Erro ao conectar. Verifique a internet.</td></tr>';
     }
   }
 
@@ -298,13 +408,26 @@
     btn.disabled = true;
     btn.innerHTML = '<i class="ti ti-loader"></i> Salvando...';
 
+    const payload = { data: data || null, km, ganho, gas, gdiario, manut, veiculo: formVehicle };
+
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/registros`, {
+      let res = await fetch(`${SUPABASE_URL}/rest/v1/registros`, {
         method: 'POST',
         headers: HEADERS,
-        body: JSON.stringify({ data: data || null, km, ganho, gas, gdiario, manut })
+        body: JSON.stringify(payload)
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        // fallback in case the 'veiculo' column doesn't exist yet
+        const { veiculo, ...withoutVehicle } = payload;
+        res = await fetch(`${SUPABASE_URL}/rest/v1/registros`, {
+          method: 'POST',
+          headers: HEADERS,
+          body: JSON.stringify(withoutVehicle)
+        });
+        if (!res.ok) throw new Error();
+        missingColumn = true;
+        showSetupWarning();
+      }
 
       ['f-data','f-km','f-ganho','f-gas','f-gdiario','f-manut'].forEach(id => {
         document.getElementById(id).value = '';
@@ -338,12 +461,68 @@
     } catch(e) { alert('Erro ao limpar.'); }
   }
 
+  function vehicleOf(r) { return (r.veiculo === 'moto') ? 'moto' : 'fiorino'; }
+
+  function computeStats(list) {
+    const n = list.length;
+    let totKm=0, totGanho=0, totGas=0, totGdiario=0, totManut=0;
+    list.forEach(r => {
+      totKm += Number(r.km); totGanho += Number(r.ganho);
+      totGas += Number(r.gas); totGdiario += Number(r.gdiario); totManut += Number(r.manut);
+    });
+    const avgKm = n ? totKm/n : 0, avgGanho = n ? totGanho/n : 0, avgGas = n ? totGas/n : 0;
+    const avgGdiario = n ? totGdiario/n : 0, avgManut = n ? totManut/n : 0;
+    const avgLucro = avgGanho - avgGas - avgGdiario - avgManut;
+    const totGasto = totGas + totGdiario + totManut;
+    return { n, totKm, totGanho, totGas, totGdiario, totManut, avgKm, avgGanho, avgGas, avgGdiario, avgManut, avgLucro, totGasto };
+  }
+
+  function renderCompareCard(elId, label, icon, list) {
+    const el = document.getElementById(elId);
+    if (list.length === 0) {
+      el.className = 'compare-card empty';
+      el.innerHTML = `<i class="ti ${icon}" style="font-size:18px; display:block; margin-bottom:4px"></i>Sem registros de ${label} ainda`;
+      return;
+    }
+    const s = computeStats(list);
+    el.className = 'compare-card';
+    el.innerHTML = `
+      <div class="ctitle"><i class="ti ${icon}"></i> ${label} (${s.n} dias)</div>
+      <div class="crow"><span>KM médio/dia</span><b>${s.avgKm.toFixed(1).replace('.', ',')} km</b></div>
+      <div class="crow"><span>Ganho total</span><b>${fmt(s.totGanho)}</b></div>
+      <div class="crow"><span>Gasto total</span><b>${fmt(s.totGasto)}</b></div>
+      <div class="crow"><span>Lucro médio/dia</span><b>${fmt(s.avgLucro)}</b></div>
+    `;
+  }
+
   function render() {
     const tbody = document.getElementById('tbody');
     const stats = document.getElementById('stats-grid');
+    const filterBar = document.getElementById('filter-bar');
+    const compareWrap = document.getElementById('compare-wrap');
 
     if (!rows || rows.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="8" class="empty"><i class="ti ti-inbox" style="font-size:20px; display:block; margin-bottom:6px"></i>Nenhum registro ainda</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="9" class="empty"><i class="ti ti-inbox" style="font-size:20px; display:block; margin-bottom:6px"></i>Nenhum registro ainda</td></tr>';
+      stats.style.display = 'none';
+      filterBar.style.display = 'none';
+      compareWrap.style.display = 'none';
+      return;
+    }
+
+    filterBar.style.display = 'flex';
+
+    const fiorinoRows = rows.filter(r => vehicleOf(r) === 'fiorino');
+    const motoRows = rows.filter(r => vehicleOf(r) === 'moto');
+
+    // separated comparison cards (always show combined comparison, regardless of filter)
+    compareWrap.style.display = 'grid';
+    renderCompareCard('cc-fiorino', 'Fiorino', 'ti-car', fiorinoRows);
+    renderCompareCard('cc-moto', 'Moto', 'ti-motorbike', motoRows);
+
+    const filteredRows = filter === 'todos' ? rows : filter === 'fiorino' ? fiorinoRows : motoRows;
+
+    if (filteredRows.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" class="empty"><i class="ti ti-inbox" style="font-size:20px; display:block; margin-bottom:6px"></i>Nenhum registro de ${filter} ainda</td></tr>`;
       stats.style.display = 'none';
       return;
     }
@@ -351,15 +530,14 @@
     stats.style.display = 'grid';
 
     let html = '';
-    let totKm=0, totGanho=0, totGas=0, totGdiario=0, totManut=0;
-    const n = rows.length;
-
-    rows.forEach(r => {
+    filteredRows.forEach(r => {
       const liquido = r.ganho - r.gas - r.gdiario - r.manut;
-      totKm += Number(r.km); totGanho += Number(r.ganho);
-      totGas += Number(r.gas); totGdiario += Number(r.gdiario); totManut += Number(r.manut);
+      const v = vehicleOf(r);
+      const vLabel = v === 'moto' ? 'Moto' : 'Fiorino';
+      const vIcon = v === 'moto' ? 'ti-motorbike' : 'ti-car';
       html += `<tr>
         <td>${fmtDate(r.data)}</td>
+        <td><span class="vtag ${v}"><i class="ti ${vIcon}"></i>${vLabel}</span></td>
         <td>${r.km > 0 ? Number(r.km).toFixed(1).replace('.', ',') : '—'}</td>
         <td class="positive">${r.ganho > 0 ? fmt(r.ganho) : '—'}</td>
         <td class="${r.gas > 0 ? 'negative' : 'muted'}">${r.gas > 0 ? fmt(r.gas) : '—'}</td>
@@ -370,30 +548,28 @@
       </tr>`;
     });
 
-    const avgKm = totKm/n, avgGanho = totGanho/n, avgGas = totGas/n;
-    const avgGdiario = totGdiario/n, avgManut = totManut/n;
-    const avgLucro = avgGanho - avgGas - avgGdiario - avgManut;
-    const totGasto = totGas + totGdiario + totManut;
+    const s = computeStats(filteredRows);
 
     html += `<tr class="avg-row">
       <td>Média</td>
-      <td>${avgKm.toFixed(1).replace('.', ',')} km</td>
-      <td>${fmt(avgGanho)}</td>
-      <td>${fmt(avgGas)}</td>
-      <td>${fmt(avgGdiario)}</td>
-      <td>${fmt(avgManut)}</td>
-      <td class="${avgLucro >= 0 ? 'positive' : 'negative'}">${fmt(avgLucro)}</td>
+      <td></td>
+      <td>${s.avgKm.toFixed(1).replace('.', ',')} km</td>
+      <td>${fmt(s.avgGanho)}</td>
+      <td>${fmt(s.avgGas)}</td>
+      <td>${fmt(s.avgGdiario)}</td>
+      <td>${fmt(s.avgManut)}</td>
+      <td class="${s.avgLucro >= 0 ? 'positive' : 'negative'}">${fmt(s.avgLucro)}</td>
       <td></td>
     </tr>`;
 
     tbody.innerHTML = html;
 
-    document.getElementById('s-km').textContent = avgKm.toFixed(1).replace('.', ',');
-    document.getElementById('s-ganho').textContent = 'R$ ' + avgGanho.toFixed(2).replace('.', ',');
-    document.getElementById('s-gas').textContent = 'R$ ' + avgGas.toFixed(2).replace('.', ',');
-    document.getElementById('s-lucro').textContent = 'R$ ' + avgLucro.toFixed(2).replace('.', ',');
-    document.getElementById('s-tganho').textContent = 'R$ ' + totGanho.toFixed(2).replace('.', ',');
-    document.getElementById('s-tgasto').textContent = 'R$ ' + totGasto.toFixed(2).replace('.', ',');
+    document.getElementById('s-km').textContent = s.avgKm.toFixed(1).replace('.', ',');
+    document.getElementById('s-ganho').textContent = 'R$ ' + s.avgGanho.toFixed(2).replace('.', ',');
+    document.getElementById('s-gas').textContent = 'R$ ' + s.avgGas.toFixed(2).replace('.', ',');
+    document.getElementById('s-lucro').textContent = 'R$ ' + s.avgLucro.toFixed(2).replace('.', ',');
+    document.getElementById('s-tganho').textContent = 'R$ ' + s.totGanho.toFixed(2).replace('.', ',');
+    document.getElementById('s-tgasto').textContent = 'R$ ' + s.totGasto.toFixed(2).replace('.', ',');
   }
 
   const hoje = new Date();
